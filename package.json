@@ -11,7 +11,10 @@
     "start": "brunch watch --server",
     "build": "brunch build --production"
   },
-  "dependencies": {},
+  "postinstall": "node skeleton.js",
+  "dependencies": {
+    "website-scraper": "^0.3.3"
+  },
   "devDependencies": {
     "javascript-brunch": "^2.0.0",
     "css-brunch": "^2.0.0",
