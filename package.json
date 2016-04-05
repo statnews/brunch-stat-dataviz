@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "brunch watch --server",
-    "build": "brunch build --production"
+    "build": "brunch build --production",
+	"postinstall": "node skeleton.js"
   },
   "dependencies": {
     "website-scraper": "^0.3.3"
@@ -20,6 +21,5 @@
     "uglify-js-brunch": "^2.0.0",
     "clean-css-brunch": "^2.0.0",
     "auto-reload-brunch": "^2.0.0"
-  },
-  "postinstall": "node skeleton.js"
+  }
 }
