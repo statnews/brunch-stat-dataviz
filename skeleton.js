@@ -113,7 +113,11 @@ function removeScripts( data ) {
 function adPlaceholders( data ) {
 	var $ = cheerio.load( data );
 
-	$( '#div-gpt-ad-ad_halfpage1' ).replaceWith( $( '<img src="http://placehold.it/300x600" width="300" height="600" alt="Ad placeholder" title="Ad placeholder">' ) );
+	$( '#div-gpt-ad-ad_halfpage1' ).replaceWith( $( getPlaceholder( 300, 600 ) ) );
 
 	return $.html();
+}
+
+function getPlaceholder( width, height ) {
+	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
 }
