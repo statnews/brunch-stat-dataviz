@@ -77,6 +77,7 @@ function processSkeleton( err, data ) {
 
 	data = removeScripts( data );
 	data = adPlaceholders( data );
+	data = addAppScripts( data );
 
 	writeSkeleton( data );
 }
@@ -110,14 +111,25 @@ function removeScripts( data ) {
 	return $.html();
 }
 
+function addAppScripts( data ) {
+	var $ = cheerio.load( data );
+
+	$('head').append('<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n");
+	$('body').append('<script src="app.js"></script>\
+	<script>require(\'initialize\');</script>' + "\n");
+
+	return $.html();
+}
+
 function adPlaceholders( data ) {
 	var $ = cheerio.load( data );
 
 	$( '#div-gpt-ad-ad_halfpage1' ).replaceWith( $( getPlaceholder( 300, 600 ) ) );
+	$( '#div-gpt-ad-ad_lead2' ).replaceWith( $( getPlaceholder( 728, 90 ) ) );
 
 	return $.html();
 }
 
 function getPlaceholder( width, height ) {
-	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; margin: 0 auto; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
 }
