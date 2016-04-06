@@ -114,6 +114,7 @@ function removeScripts( data ) {
 function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
+	$('head').append('<link rel="stylesheet" href="app.css" type="text/css" media="screen">');
 	$('body').append('<script src="app.js"></script>\
 	<script>require(\'initialize\');</script>' + "\n");
 
