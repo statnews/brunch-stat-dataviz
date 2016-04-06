@@ -77,6 +77,7 @@ function processSkeleton( err, data ) {
 
 	data = removeScripts( data );
 	data = adPlaceholders( data );
+	data = addAppScripts( data );
 
 	writeSkeleton( data );
 }
@@ -110,10 +111,18 @@ function removeScripts( data ) {
 	return $.html();
 }
 
+function addAppScripts( data ) {
+	var $ = cheerio.load( data );
+
+	$(body).append('<script src="app.js"></script>');
+	$(body).append('<script>require(\'initialize\');</script>');
+}
+
 function adPlaceholders( data ) {
 	var $ = cheerio.load( data );
 
 	$( '#div-gpt-ad-ad_halfpage1' ).replaceWith( $( getPlaceholder( 300, 600 ) ) );
+	$( '#div-gpt-ad-ad_lead2' ).replaceWith( $( getPlaceholder( 728, 90 ) ) );
 
 	return $.html();
 }
