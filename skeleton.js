@@ -116,6 +116,8 @@ function addAppScripts( data ) {
 
 	$('body').append('<script src="app.js"></script>');
 	$('body').append('<script>require(\'initialize\');</script>');
+
+	return $.html();
 }
 
 function adPlaceholders( data ) {
