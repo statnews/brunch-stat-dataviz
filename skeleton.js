@@ -114,7 +114,7 @@ function removeScripts( data ) {
 function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
-	$('head').append('<link rel="stylesheet" href="app.css" type="text/css" media="screen">');
+	$('head').append('<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n");
 	$('body').append('<script src="app.js"></script>\
 	<script>require(\'initialize\');</script>' + "\n");
 
@@ -131,5 +131,5 @@ function adPlaceholders( data ) {
 }
 
 function getPlaceholder( width, height ) {
-	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; margin: 0 auto; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
 }
