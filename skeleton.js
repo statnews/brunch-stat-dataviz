@@ -1,7 +1,7 @@
 var scraper = require( 'website-scraper' );
 var fs = require( 'fs' );
 var cheerio = require( 'cheerio' );
-var file;
+var file, ign;
 
 scraper.scrape( {
 	urls: [ 'https://stat.qa.wordpress.boston.com/2016/04/04/stat-dataviz-skeleton-post/' ],
@@ -136,16 +136,26 @@ function getPlaceholder( width, height ) {
 }
 
 
-/**
- * Remove the followingn from .gitignore:
- * app/assets/index.html
- * app/assets/vendor/
- */
+// Remove app/assets/index.html & app/assets/vendor/ from .gitignore
 function loadIgnore( callback ) {
-	fs.readFile( '.gitignore', 'utf8', callback );
+
+	fs.readdir( process.cwd(), function( err, files ) {
+		if (err){
+			throw err;
+		} else {
+			ign = files.indexOf( '.gitignore' ) ? './.gitignore' : '';
+		}
+	});
+	if ( ign ) {
+		fs.readFile( ign, 'utf8', callback );
+	}
 }
 
-function processIgnore(er, data ) {
+function processIgnore(err, data ) {
+	if ( err ) {
+		throw err;
+	}
+
 	data.replace( 'app/assets/index.html', '' );
 	data.replace( 'app/assets/vendor/', '' );
 
@@ -153,5 +163,5 @@ function processIgnore(er, data ) {
 }
 
 function writeIgnore( data ) {
-	fs.writeFile( '.gitignore', data );
+	fs.writeFile( ign, data );
 }
