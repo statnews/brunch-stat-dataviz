@@ -61,6 +61,7 @@ scraper.scrape( {
 	if ( results ) {
 		file = this.options.directory + '/' + results[0].filename;
 		loadSkeleton( processSkeleton );
+		loadIgnore( processIgnore );
 	}
 } ).catch( function( err ) {
 	console.log( err.message );
@@ -132,4 +133,25 @@ function adPlaceholders( data ) {
 
 function getPlaceholder( width, height ) {
 	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; margin: 0 auto; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+}
+
+
+/**
+ * Remove the followingn from .gitignore:
+ * app/assets/index.html
+ * app/assets/vendor/
+ */
+function loadIgnore( callback ) {
+	fs.readFile( '.gitignore', 'utf8', callback );
+}
+
+function processIgnore(er, data ) {
+	data.replace( 'app/assets/index.html', '' );
+	data.replace( 'app/assets/vendor/', '' );
+
+	writeIgnore( data );
+}
+
+function writeIgnore( data ) {
+	fs.writeFile( '.gitignore', data );
 }
