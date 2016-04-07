@@ -60,16 +60,11 @@ scraper.scrape( {
 } ).then( function( results ) {
 	if ( results ) {
 		file = this.options.directory + '/' + results[0].filename;
-		loadSkeleton( processSkeleton );
-		loadIgnore( processIgnore );
+		fs.readFile( file, 'utf8', processSkeleton );
 	}
 } ).catch( function( err ) {
 	console.log( err.message );
 } );
-
-function loadSkeleton( callback ) {
-	fs.readFile( file, 'utf8', callback );
-}
 
 function processSkeleton( err, data ) {
 	if ( err ) {
@@ -80,10 +75,6 @@ function processSkeleton( err, data ) {
 	data = adPlaceholders( data );
 	data = addAppScripts( data );
 
-	writeSkeleton( data );
-}
-
-function writeSkeleton( data ) {
 	fs.writeFile( file, data );
 }
 
@@ -115,9 +106,9 @@ function removeScripts( data ) {
 function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
-	$('head').append('<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n");
-	$('body').append('<script src="app.js"></script>\
-	<script>require(\'initialize\');</script>' + "\n");
+	$( 'head' ).append( '<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n" );
+	$( 'body' ).append( '<script src="app.js"></script>\
+	<script>require(\'initialize\');</script>' + "\n" );
 
 	return $.html();
 }
@@ -133,25 +124,4 @@ function adPlaceholders( data ) {
 
 function getPlaceholder( width, height ) {
 	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; margin: 0 auto; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
-}
-
-
-// Remove app/assets/index.html & app/assets/vendor/ from .gitignore
-function loadIgnore( callback ) {
-	fs.readFile( '.gitignore', 'utf8', callback );
-}
-
-function processIgnore(err, data ) {
-	if ( err ) {
-		throw err;
-	}
-
-	data = data.replace( 'app/assets/index.html', '' );
-	data = data.replace( 'app/assets/vendor/', '' );
-
-	writeIgnore( data );
-}
-
-function writeIgnore( data ) {
-	fs.writeFile( '.gitignore', data );
 }
