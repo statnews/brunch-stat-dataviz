@@ -12,10 +12,26 @@ var config = {
 	skel_file: 'public/index.html',
 	dataviz_div_id: 'dataviz-chart',
 	meta_file: 'public/stat-dataviz.json',
+	version_file: 'public/version.json',
 	init_module: 'initialize'
 }
 
+function getVersion() {
+	var version,
+		version_obj;
+
+	version = fs.readFileSync( config.version_file, 'utf8' );
+
+	version_obj = JSON.parse( version );
+
+	return version_obj.versionExt;
+}
+
 function getMarkup( $, $dataviz ) {
+	if ( ! $dataviz.length ) {
+		return '';
+	}
+
 	return minify( $.html( $dataviz ), {
 		collapseWhitespace: true
 	} );
@@ -29,10 +45,14 @@ function getStylesheets() {
 	return [ brunch_config.files.stylesheets.joinTo ];
 }
 
-function getDataAttribs( $, $dataviz ) {
+function getDataAttribs( $dataviz ) {
 	var attrib,
 		attribs,
 		data_attribs = { };
+
+	if ( ! $dataviz.length ) {
+		return '';
+	}
 
 	attribs = $dataviz[0].attribs;
 
@@ -57,22 +77,13 @@ function generateMeta( err, data ) {
 
 	$dataviz = $( '#' + config.dataviz_div_id );
 
-	if ( ! $dataviz.length ) {
-		console.log( 'Configured dataviz_div_id (' + config.dataviz_div_id + ') does not yet exist in ' + config.skel_file );
-		return;
-	}
-
 	meta = {
-		stat_dataviz: {
-			version: '1.0',
-			meta: {
-				markup: getMarkup( $, $dataviz ),
-				javascripts: getJavascripts(),
-				stylesheets: getStylesheets(),
-				data_attribs: getDataAttribs( $, $dataviz ),
-				init_module: config.init_module
-			}
-		}
+		version: getVersion(), // The current Brunch build version.
+		markup: getMarkup( $, $dataviz ), // The dataviz container markup.
+		javascripts: getJavascripts(), // Script bundle(s).
+		stylesheets: getStylesheets(), // CSS bundle(s).
+		data_attribs: getDataAttribs( $dataviz ), // Datviz container data attribs.
+		init_module: config.init_module // Name of the require() entry point module.
 	}
 
 	fs.writeFile( config.meta_file, JSON.stringify( meta ), function( err ) {
