@@ -10,7 +10,8 @@ module.exports = {
 	},
 	plugins: {
 		afterBrunch: [
-			'node gitignore.js'
+			'node stat-gitignore.js',
+			'node stat-dataviz.js'
 		]
 	}
 }
