@@ -72,7 +72,8 @@ function processSkeleton( err, data ) {
 	}
 
 	data = removeScripts( data );
-	data = removeSocial( data );
+	data = removeMeta( data );
+	data = removeLinkRels( data );
 	data = adPlaceholders( data );
 	data = addAppScripts( data );
 	data = addRobotsMeta( data );
@@ -105,9 +106,9 @@ function removeScripts( data ) {
 	return $.html();
 }
 
-function removeSocial( data ) {
+function removeMeta( data ) {
 	var $ = cheerio.load( data ),
-		socialMeta = [
+		meta = [
 			'og:locale',
 			'og:type',
 			'og:title',
@@ -126,25 +127,47 @@ function removeSocial( data ) {
 			'twitter:title',
 			'twitter:site',
 			'twitter:image',
-			'twitter:creator'
+			'twitter:creator',
+			'news_keywords',
+			'msapplication-TileImage'
 		];
 
-	for ( var i = 0; i < socialMeta.length; i++ ) {
-		$( 'meta[property="'+ socialMeta[i] +'"]' ).remove();
-		$( 'meta[name="'+ socialMeta[i] +'"]' ).remove();
+	for ( var i = 0; i < meta.length; i ++ ) {
+		$( 'meta[property="' + meta[i] + '"]' ).remove();
+		$( 'meta[name="' + meta[i] + '"]' ).remove();
 	}
 
-	$('html').removeAttr('prefix');
+	$( 'html' ).removeAttr( 'prefix' );
 
 	return $.html();
 } 
+
+function removeLinkRels( data ) {
+	var $ = cheerio.load( data ),
+		rels = [
+			'profile',
+			'pingback',
+			'original-source',
+			'canonical',
+			'alternate',
+			'https://api.w.org/',
+			'EditURI',
+			'wlwmanifest',
+			'shortlink'
+		];
+
+	for ( var i = 0; i < rels.length; i ++ ) {
+		$( 'link[rel="' + rels[i] + '"]' ).remove();
+	}
+
+	return $.html();
+}
 
 function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
 	$( 'head' ).append( '<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n" );
-	$( 'body' ).append( '<script src="app.js"></script>\
-	<script>require(\'initialize\');</script>' + "\n" );
+	$( 'body' ).append( '<script src="app.js"></script><script>require(\'initialize\');</script>' + "\n" );
 
 	return $.html();
 }
@@ -152,7 +175,7 @@ function addAppScripts( data ) {
 function addRobotsMeta( data ) {
 	var $ = cheerio.load( data );
 
-	$('head').append( '<meta name="robots" content="noindex">' + "\n" );
+	$( 'head' ).append( '<meta name="robots" content="noindex">' + "\n" );
 
 	return $.html();
 }
@@ -161,11 +184,10 @@ function adPlaceholders( data ) {
 	var $ = cheerio.load( data );
 
 	$( '#div-gpt-ad-ad_halfpage1' ).replaceWith( $( getPlaceholder( 300, 600 ) ) );
-	$( '#div-gpt-ad-ad_lead2' ).replaceWith( $( getPlaceholder( 728, 90 ) ) );
 
 	return $.html();
 }
 
 function getPlaceholder( width, height ) {
-	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; margin: 0 auto; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
 }
