@@ -4,7 +4,7 @@ var cheerio = require( 'cheerio' );
 var file;
 
 scraper.scrape( {
-	urls: [ 'https://stat.qa.wordpress.boston.com/2016/04/04/stat-dataviz-skeleton-post/' ],
+	urls: [ 'https://stat.qa.wordpress.boston.com/2016/04/04/stat-dataviz-skeleton/' ],
 	directory: 'app/assets/',
 	subdirectories: [
 		{
