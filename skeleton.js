@@ -72,8 +72,10 @@ function processSkeleton( err, data ) {
 	}
 
 	data = removeScripts( data );
+	data = removeSocial( data );
 	data = adPlaceholders( data );
 	data = addAppScripts( data );
+	data = addRobotsMeta( data );
 
 	fs.writeFile( file, data );
 }
@@ -103,12 +105,54 @@ function removeScripts( data ) {
 	return $.html();
 }
 
+function removeSocial( data ) {
+	var $ = cheerio.load( data ),
+		socialMeta = [
+			'og:locale',
+			'og:type',
+			'og:title',
+			'og:description',
+			'og:url',
+			'og:site_name',
+			'article:publisher',
+			'article:section',
+			'article:published_time',
+			'article:modified_time',
+			'og:updated_time',
+			'fb:app_id',
+			'og:image',
+			'twitter:card',
+			'twitter:description',
+			'twitter:title',
+			'twitter:site',
+			'twitter:image',
+			'twitter:creator'
+		];
+
+	for ( var i = 0; i < socialMeta.length; i++ ) {
+		$( 'meta[property="'+ socialMeta[i] +'"]' ).remove();
+		$( 'meta[name="'+ socialMeta[i] +'"]' ).remove();
+	}
+
+	$('html').removeAttr('prefix');
+
+	return $.html();
+} 
+
 function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
 	$( 'head' ).append( '<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n" );
 	$( 'body' ).append( '<script src="app.js"></script>\
 	<script>require(\'initialize\');</script>' + "\n" );
+
+	return $.html();
+}
+
+function addRobotsMeta( data ) {
+	var $ = cheerio.load( data );
+
+	$('head').append( '<meta name="robots" content="noindex">' + "\n" );
 
 	return $.html();
 }
