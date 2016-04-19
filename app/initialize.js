@@ -1,3 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // do your setup here
+  // Initialize your main JS module here. For example:
+  // var concussion = require('js/concussions');
 });
