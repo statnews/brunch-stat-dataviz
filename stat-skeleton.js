@@ -4,7 +4,7 @@ var cheerio = require( 'cheerio' );
 var file;
 
 scraper.scrape( {
-	urls: [ 'https://stat.qa.wordpress.boston.com/2016/04/04/stat-dataviz-skeleton/' ],
+	urls: [ 'https://www.statnews.com/2016/03/25/zika-globe-interactive/' ],
 	directory: 'app/assets/',
 	subdirectories: [
 		{
@@ -72,11 +72,13 @@ function processSkeleton( err, data ) {
 	}
 
 	data = removeScripts( data );
+	data = removeStyles( data );
 	data = removeMeta( data );
 	data = removeLinkRels( data );
 	data = adPlaceholders( data );
 	data = addAppScripts( data );
 	data = addRobotsMeta( data );
+	data = replaceContent( data );
 
 	fs.writeFile( file, data );
 }
@@ -86,13 +88,23 @@ function removeScripts( data ) {
 		i,
 		scriptSrcs = [
 			'vendor/stat/js/stat-dfp.js',
-			'vendor/stat/js/sfp.js'
+			'vendor/stat/js/sfp.js',
+			'vendor/stat/js/bostonglobemedia.js',
+			'vendor/stat/js/AppMeasurement.js',
+			'vendor/stat/js/stat-adobe-analytics.js',
+			'vendor/stat/js/zikaglobe.min.js',
+			'vendor/stat/js/trendmd.min.js'
 		],
 		scriptContains = [
 			'gpt.js',
 			'dfpBreakpoints',
 			'dfpBuiltMappings',
-			'wp-emoji-release.min.js'
+			'wp-emoji-release.min.js',
+			'TrendMD.register', // TrendMD
+			'_sf_startpt', // Chartbeat
+			'loadChartbeat', // Chartbeat
+			'ml314.com', // Bombora
+			's_code' // Omniture
 		];
 
 	for ( i = 0; i < scriptSrcs.length; i ++ ) {
@@ -106,9 +118,25 @@ function removeScripts( data ) {
 	return $.html();
 }
 
+function removeStyles( data ) {
+	var $ = cheerio.load( data ),
+		i,
+		linkHrefs = [
+			'vendor/stat/css/zikaglobe.css'
+		];
+
+	for ( i = 0; i < linkHrefs.length; i ++ ) {
+		$( 'link[href="' + linkHrefs[i] + '"]' ).remove();
+	}
+
+	return $.html();
+}
+
 function removeMeta( data ) {
 	var $ = cheerio.load( data ),
 		meta = [
+			'description',
+			'robots',
 			'og:locale',
 			'og:type',
 			'og:title',
@@ -129,7 +157,9 @@ function removeMeta( data ) {
 			'twitter:image',
 			'twitter:creator',
 			'news_keywords',
-			'msapplication-TileImage'
+			'msapplication-TileImage',
+			'article:author',
+			'article:tag'
 		];
 
 	for ( var i = 0; i < meta.length; i ++ ) {
@@ -190,4 +220,17 @@ function adPlaceholders( data ) {
 
 function getPlaceholder( width, height ) {
 	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+}
+
+function replaceContent( data ) {
+	var $ = cheerio.load( data ),
+		title = 'STAT Dataviz Skeleton';
+
+	$( 'title' ).text( title );
+	$( '.header-inner .article-title' ).text( title );
+	$( '.content-header .post-title span' ).text( title );
+	$( '.post-widgets' ).remove();
+	$( 'article.content-article' ).html( '\n<p>Empty dataviz container is below...</p>\n\n<!-- Dataviz container start -->\n<div class="dataviz" id="dataviz-chart">\n\n</div>\n<!-- Dataviz container end -->\n\n' );
+
+	return $.html();
 }
