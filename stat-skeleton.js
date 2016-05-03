@@ -228,9 +228,9 @@ function replaceContent( data ) {
 
 	$( 'title' ).text( title );
 	$( '.header-inner .article-title' ).text( title );
-	$( '.content-header .post-title span' ).text( title );
+	$( '.content-header .post-title h1' ).text( title );
 	$( '.post-widgets' ).remove();
-	$( 'article.content-article' ).html( '\n<p>Empty dataviz container is below...</p>\n\n<!-- Dataviz container start -->\n<div class="dataviz" id="dataviz-chart">\n\n</div>\n<!-- Dataviz container end -->\n\n' );
+	$( 'article.content-article' ).html( '\n<p>Dataviz container is below...</p>\n\n<!-- Dataviz container start -->\n<div class="dataviz" id="dataviz-chart">\n\n</div>\n<!-- Dataviz container end -->\n\n' );
 
 	return $.html();
 }
