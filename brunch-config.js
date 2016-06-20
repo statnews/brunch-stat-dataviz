@@ -9,6 +9,11 @@ module.exports = {
 		usePolling: true
 	},
 	plugins: {
+		postcss: {
+			processors: [
+				require('autoprefixer')(['last 8 versions'])
+			]
+		},
 		afterBrunch: [
 			'node stat-gitignore.js',
 			'node stat-dataviz.js'

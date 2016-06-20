@@ -70,6 +70,18 @@ Assuming you are ready to release your project to production, to do a production
 
 See the [Brunch Commands](https://github.com/brunch/brunch/blob/master/docs/commands.md) doc for more info on all available brunch build commands.
 
+### Build Steps
+
+When a build runs, Brunch will compile CSS and JavaScript as follows:
+
+* Combine all the CSS files in the `app/css`.
+* Run [Autoprefixer](https://github.com/postcss/autoprefixer) on the CSS.
+  * This step will generate the appropriate vendor prefixes for your CSS, so you don't need to write them yourself.
+* Combine all the CommonJS modules used by `app/js/initialize.js` into a single file.
+* If running a production build, minify the CSS and JavaScript.
+* If _not_ running a production build, include LiveReload in the JavaScript.
+* Generate `stat-dataviz.json` (see below).
+
 ### STAT Brunch Build Customizations
 
 We've integrated a couple custom Node scripts into the Brunch build process. We use a Brunch plugin called [after-brunch](https://github.com/Creative-Licence-Digital/after-brunch) to run these scripts everytime a Brunch build is performed. These scripts are described in more detail below:
