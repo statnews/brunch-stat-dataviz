@@ -56,14 +56,12 @@ scraper.scrape( {
 			selector: 'link[rel*="icon"]',
 			attr: 'href'
 		}
-	]
-} ).then( function( results ) {
-	if ( results ) {
-		file = this.options.directory + '/' + results[0].filename;
-		fs.readFile( file, 'utf8', processSkeleton );
+	],
+	urlFilter: function( url ) {
+		// Don't save the ComScore tracking pixel.
+		// This would otherwise be saved to app/assets/p2.
+		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
 	}
-} ).catch( function( err ) {
-	console.log( err.message );
 } );
 
 function processSkeleton( err, data ) {
