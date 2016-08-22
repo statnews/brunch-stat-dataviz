@@ -62,6 +62,13 @@ scraper.scrape( {
 		// This would otherwise be saved to app/assets/p2.
 		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
 	}
+} ).then( function( results ) {
+	if ( results ) {
+		file = this.options.directory + '/' + results[0].filename;
+		fs.readFile( file, 'utf8', processSkeleton );
+	}
+} ).catch( function( err ) {
+	console.log( err.message );
 } );
 
 function processSkeleton( err, data ) {
@@ -217,18 +224,49 @@ function adPlaceholders( data ) {
 }
 
 function getPlaceholder( width, height ) {
-	return  '<div style="box-sizing: border-box; width: ' + width + 'px; height: ' + height + 'px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;"><p style="color: #969696;">' + width + 'x' + height + '</p></div>';
+	// https://mdn.io/template-literals
+	return `
+		<div style="box-sizing: border-box; width: ${width}px; height: ${height}px; background-color: #CCCCCC; text-align: center; padding-top: 1em; font-weight: bold;">
+			<p style="color: #969696;">${width}x${height}</p>
+		</div>
+		`;
+}
+
+function getRandomInt(min, max) {
+	// From https://mdn.io/math-random
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function replaceContent( data ) {
 	var $ = cheerio.load( data ),
-		title = 'STAT Dataviz Skeleton';
+		title = 'STAT Dataviz Skeleton',
+		vizNum = getRandomInt(0, 9999999);
 
 	$( 'title' ).text( title );
 	$( '.header-inner .article-title' ).text( title );
 	$( '.content-header .post-title h1' ).text( title );
 	$( '.post-widgets' ).remove();
-	$( 'article.content-article' ).html( '\n<p>Dataviz container is below...</p>\n\n<!-- Dataviz container start -->\n<div class="dataviz" id="dataviz-chart">\n\n</div>\n<!-- Dataviz container end -->\n\n' );
+	$( 'article.content-article' ).html( `
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+		<!-- Dataviz container start -->
+		<div class="stat-dataviz media media-break">
+			<div class="media-content">
+				<div class="dataviz-${vizNum}">
+					<p><strong>Visualization code goes here.</strong> Please target JS and CSS to the <code>.dataviz-${vizNum}</code> class.</p>
+					<p>Each data visualization gets a unique CSS class so that multiple visualizations can appear on the same page.</p>
+				</div>
+			</div>
+			<figcaption class="media-label">
+				<cite class="media-credit">Test Author/STAT</cite>
+				<span class="media-source">Source: <a href="#">Test Source</a></span>
+			</figcaption>
+		</div>
+		<!-- Dataviz container end -->
+
+	` );
 
 	return $.html();
 }
