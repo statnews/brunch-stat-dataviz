@@ -7,9 +7,6 @@ var prompt = require( 'prompt' );
 var promptSchema = {
   properties: {
     url: {
-      // @stephenhay regex from https://mathiasbynens.be/demo/url-regex
-      pattern: new RegExp('@^(https?|ftp)://[^\s/$.?#].[^\s]*$@iS'),
-      message: 'Please enter a valid URL.',
       required: false,
       default: 'https://www.statnews.com/2016/03/25/zika-globe-interactive/'
     }
