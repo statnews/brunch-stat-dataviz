@@ -24,7 +24,7 @@ To create a new STAT Dataviz project, run the following Brunch command in a Term
 
 * `brunch new [path] -s statnews/brunch-stat-dataviz`
 
-In the above command replace `[path]` with the actual directory name you want your new project to go in to. More info on the `brunch new` command can be found in the [Brunch Commands](https://github.com/brunch/brunch/blob/master/docs/commands.md) manual.
+In the above command replace `[path]` with the actual directory name you want your new project to go in to. More info on the `brunch new` command can be found in the [Brunch Commands](http://brunch.io/docs/commands) documentation.
 
 When you run the above command the following steps are completed for you:
 
@@ -32,7 +32,7 @@ When you run the above command the following steps are completed for you:
 * An `npm install` is run by Brunch to install all Node dependencies as specified in the project's `package.json` file
 * A custom npm postinstall script, `stat-skeleton.js` is run. This creates a one-time local clone of the [Interactive: Tracking Zika virus, country by country](https://www.statnews.com/2016/03/25/zika-globe-interactive/) article from www.statnews.com and saves it to the `app/assets/` directory. This is also where you start developing your dataviz app's code.
 
-See the [Getting Started](https://github.com/brunch/brunch/tree/master/docs) doc for more info on the standard Brunch setup process.
+See the [Getting Started](http://brunch.io/docs/getting-started) page for more info on the standard Brunch setup process.
 
 ## Dataviz Directory Structure
 
@@ -84,7 +84,7 @@ When a build runs, Brunch will compile CSS and JavaScript as follows:
 
 ### STAT Brunch Build Customizations
 
-We've integrated a couple custom Node scripts into the Brunch build process. We use a Brunch plugin called [after-brunch](https://github.com/Creative-Licence-Digital/after-brunch) to run these scripts everytime a Brunch build is performed. These scripts are described in more detail below:
+We've integrated a couple custom Node scripts into the Brunch build process. We use a Brunch plugin called [after-brunch](https://github.com/Creative-Licence-Digital/after-brunch) to run these scripts every time a Brunch build is performed. These scripts are described in more detail below:
 
 * `stat-gitignore.js`: This script auto-updates the skeleton project's `.gitignore` file and removes entries that a target dataviz project would want to be able to save to a git repository.
 * `stat-dataviz.js`: This script generates a file in `public/` called `stat-dataviz.json` each time a Brunch build is performed. This file contains JSON-formatted metadata describing the project structure of the current dataviz app. We read this file from www.statnews.com in order to know what files and assets we need to load in order to render an externally hosted dataviz app on the STAT website.
@@ -93,5 +93,4 @@ We've integrated a couple custom Node scripts into the Brunch build process. We 
 
 Beyond some of the STAT-specific integrations described above, this represents a fairly standard Brunch project layout. See the following links for more info on how to best use this framework for building your next STAT dataviz web application:
 
-* [Brunch Getting Started Guide](https://github.com/brunch/brunch/blob/master/docs/README.md)
-* [Brunch Advanced User Guide](https://github.com/brunch/brunch-guide#readme)
+* [The Brunch Guide](https://github.com/brunch/brunch-guide#readme)
