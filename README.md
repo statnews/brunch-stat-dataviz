@@ -28,7 +28,7 @@ In the above command replace `[path]` with the actual directory name you want yo
 
 See the [Getting Started](http://brunch.io/docs/getting-started) page for more info on the standard Brunch setup process.
 
-## Run a Build
+## Running a Build
 
 In order to test your code, you can either open the `index.html` file directly in a browser, or you can test it through the Brunch build tools (recommended). There are a couple different ways to do this:
 
