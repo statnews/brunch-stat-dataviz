@@ -36,11 +36,7 @@ First, Brunch easily allows you to build your app and startup a basic local test
 
 * `brunch watch -s`
 
-Brunch will build your app in "watch" mode and startup a local web server. Open http://localhost:3333/ in your web browser to view your application running.
-
-The Brunch web server supports "live reload" functionality, such that when you make any edits to your `app/` files, the web browser can automatically load those changes without a full page refresh. A browser plug-in is required to use this (see the [CSS Live Reloader](https://addons.mozilla.org/en-US/firefox/addon/css-live-reloader) add-on for Firefox, for example). This is completely optional, though highly recommended since it can spped up your workflow. Otherwise, you can just manually refresh the browser page whenever you make code changes.
-
-When Brunch runs a build it processes all files under `app/` and copies them to the `public/` directory. The `public/` directory is where all Brunch build output goes, and this is also where the Brunch web server serves its files from as well. You'll never want to edit files directly in `public/`, since they will be overwritten source files in `app/` anytime a new build is performed.
+Brunch will build your app in "watch" mode and startup a local web server. Open http://localhost:3333/ in your web browser to view your application running. Whenever a file is changed, Brunch will automatically run a build.
 
 To do a one-time Brunch build without starting up the web server, run:
 
@@ -51,5 +47,13 @@ Assuming you are ready to release your project to production, to do a production
 * `brunch build -p`
 
 See the [Brunch Commands](https://github.com/brunch/brunch/blob/master/docs/commands.md) doc for more info on all available brunch build commands.
+
+## Editing
+
+You can edit your CSS, JS, and HTML files in the `app/` drectory. When Brunch runs a build, it processes all files under `app/` and copies them to the `public/` directory. The `public/` directory is where all Brunch build output goes, and this is also where the Brunch web server serves its files from as well.
+
+We don't recommend editing files directly in `public/`, since they will be overwritten by the source files in `app/` whenever a new build is performed.
+
+The Brunch web server supports "live reload" functionality, such that when you make any edits to your `app/` files, the web browser can automatically load those changes without a full page refresh. A browser plug-in is required to use this (see the [CSS Live Reloader](https://addons.mozilla.org/en-US/firefox/addon/css-live-reloader) add-on for Firefox, for example). This is completely optional, though highly recommended since it can spped up your workflow. Otherwise, you can just manually refresh the browser page whenever you make code changes.
 
 ### [Learn more](learn-more.md) about how STAT Dataviz works
