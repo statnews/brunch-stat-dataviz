@@ -103,6 +103,7 @@ function removeScripts( data ) {
 		scriptContains = [
 			'gpt.js',
 			'dfpBreakpoints',
+      'statGlobal.dfp',
 			'dfpBuiltMappings',
 			'wp-emoji-release.min.js',
 			'TrendMD.register', // TrendMD
