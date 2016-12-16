@@ -3,23 +3,56 @@ var fs = require( 'fs' );
 var cheerio = require( 'cheerio' );
 var file;
 var prompt = require( 'prompt' );
+var rimraf = require( 'rimraf' );
+var args = process.argv.slice( 2 );
 
-var promptSchema = {
+var promptUrlSchema = {
   properties: {
     url: {
       required: false,
+      type: 'string',
       default: 'https://www.statnews.com/2016/03/25/zika-globe-interactive/'
     }
   }
+};
+
+if ( args.includes( '--silent' ) ) {
+  beginScraping( 'https://www.statnews.com/2016/03/25/zika-globe-interactive/' );
+} else {
+  let dirExists = fs.existsSync( 'app/assets' );
+  if ( dirExists ) {
+    // console.log( 'Warning: the app/assets directory exists. Overwrite?' );
+    promptUrlSchema.properties.overwrite = {
+      required: true,
+      type: 'string',
+      validator: /[YNyn]/,
+      warning: 'Please enter Y or N.',
+      message: 'Overwrite app/assets directory? (Y/N)'
+    }
+  }
+  prompt.start();
+  prompt.get( promptUrlSchema, function( err, result ) {
+    if ( dirExists && result.overwrite.toLowerCase() !== 'y' ) {
+      process.exit();
+    }
+    if ( dirExists ) {
+      rimraf( 'app/assets', function( err ) {
+        if ( err ) {
+      		throw err;
+      	}
+        beginScraping( result.url );
+      } );
+    } else {
+      beginScraping( result.url );
+    }
+  } );
 }
 
-console.log( 'Please enter a URL to use as the starting point for this dataviz skeleton, or press enter to accept the default.' );
-prompt.start();
-prompt.get( promptSchema, function( err, result ) {
-  beginScraping( result.url );
-} );
-
 function beginScraping( url ) {
+  if ( ! args.includes( '--silent' ) ) {
+    console.log( 'Creating dataviz skeleton...' );
+  }
+
   scraper.scrape( {
   	urls: [ url ],
   	directory: 'app/assets/',
