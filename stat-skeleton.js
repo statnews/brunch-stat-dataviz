@@ -5,19 +5,20 @@ var file;
 var prompt = require( 'prompt' );
 var rimraf = require( 'rimraf' );
 var args = process.argv.slice( 2 );
+var defaultUrl = 'https://www.statnews.com/2016/03/25/zika-globe-interactive/';
 
 var promptUrlSchema = {
   properties: {
     url: {
       required: false,
       type: 'string',
-      default: 'https://www.statnews.com/2016/03/25/zika-globe-interactive/'
+      default: defaultUrl
     }
   }
 };
 
 if ( args.includes( '--silent' ) ) {
-  beginScraping( 'https://www.statnews.com/2016/03/25/zika-globe-interactive/' );
+  beginScraping( defUrl );
 } else {
   let dirExists = fs.existsSync( 'app/assets' );
   if ( dirExists ) {
