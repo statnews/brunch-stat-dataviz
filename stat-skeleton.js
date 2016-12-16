@@ -111,7 +111,7 @@ function removeScripts( data ) {
 		i,
 		scriptSrcs = [
 			'vendor/stat/js/stat-dfp.js',
-      'vendor/stat/js/stat-modal.js',
+			'vendor/stat/js/stat-modal.js',
 			'vendor/stat/js/sfp.js',
 			'vendor/stat/js/bostonglobemedia.js',
 			'vendor/stat/js/AppMeasurement.js',
