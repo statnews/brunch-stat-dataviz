@@ -25,8 +25,9 @@ if ( args.includes( '--silent' ) ) {
     promptUrlSchema.properties.overwrite = {
       required: true,
       type: 'string',
-      pattern: /[YNyn]/,
-      message: 'Please enter Y or N.'
+      validator: /[YNyn]/,
+      warning: 'Please enter Y or N.',
+      message: 'Overwrite app/assets directory? (Y/N)'
     }
   }
   prompt.start();
@@ -36,6 +37,9 @@ if ( args.includes( '--silent' ) ) {
     }
     if ( dirExists ) {
       rimraf( 'app/assets', function( err ) {
+        if ( err ) {
+      		throw err;
+      	}
         beginScraping( result.url );
       } );
     } else {
@@ -45,6 +49,10 @@ if ( args.includes( '--silent' ) ) {
 }
 
 function beginScraping( url ) {
+  if ( ! args.includes( '--silent' ) ) {
+    console.log( 'Creating dataviz skeleton...' );
+  }
+
   scraper.scrape( {
   	urls: [ url ],
   	directory: 'app/assets/',
