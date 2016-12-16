@@ -15,6 +15,7 @@ module.exports = {
 			]
 		},
 		afterBrunch: [
+      'node stat-skeleton.js',
 			'node stat-gitignore.js',
 			'node stat-dataviz.js'
 		]

@@ -10,7 +10,7 @@
   "scripts": {
     "start": "brunch watch --server",
     "build": "brunch build --production",
-    "postinstall": "node stat-skeleton.js"
+    "postinstall": "brunch build"
   },
   "dependencies": {},
   "devDependencies": {

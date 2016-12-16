@@ -13,6 +13,11 @@ var promptSchema = {
   }
 }
 
+if ( fs.existsSync('app/assets' ) ) {
+  console.log( 'Assets directory exists. Not creating skeleton.' );
+  process.exit();
+}
+
 console.log( 'Please enter a URL to use as the starting point for this dataviz skeleton, or press enter to accept the default.' );
 prompt.start();
 prompt.get( promptSchema, function( err, result ) {
