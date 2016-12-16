@@ -2,74 +2,92 @@ var scraper = require( 'website-scraper' );
 var fs = require( 'fs' );
 var cheerio = require( 'cheerio' );
 var file;
+var prompt = require( 'prompt' );
 
-scraper.scrape( {
-	urls: [ 'https://www.statnews.com/2016/03/25/zika-globe-interactive/' ],
-	directory: 'app/assets/',
-	subdirectories: [
-		{
-			directory: 'vendor/stat/img',
-			extensions: [ '.png', '.jpg', '.jpeg', '.gif', '.svg' ]
-		},
-		{
-			directory: 'vendor/stat/js',
-			extensions: [ '.js' ]
-		},
-		{
-			directory: 'vendor/stat/css',
-			extensions: [ '.css' ]
-		},
-		{
-			directory: 'vendor/stat/fonts',
-			extensions: [ '.ttf', '.woff', '.woff2', '.eot' ]
-		}
-	],
-	sources: [
-		{ selector: 'img',
-			attr: 'src'
-		},
-		{
-			selector: 'input',
-			attr: 'src'
-		},
-		{
-			selector: 'object',
-			attr: 'data'
-		},
-		{
-			selector: 'embed',
-			attr: 'src'
-		},
-		{
-			selector: 'param[name="movie"]',
-			attr: 'value'
-		},
-		{
-			selector: 'script',
-			attr: 'src'
-		},
-		{
-			selector: 'link[rel="stylesheet"]',
-			attr: 'href'
-		},
-		{
-			selector: 'link[rel*="icon"]',
-			attr: 'href'
-		}
-	],
-	urlFilter: function( url ) {
-		// Don't save the ComScore tracking pixel.
-		// This would otherwise be saved to app/assets/p2.
-		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
-	}
-} ).then( function( results ) {
-	if ( results ) {
-		file = this.options.directory + '/' + results[0].filename;
-		fs.readFile( file, 'utf8', processSkeleton );
-	}
-} ).catch( function( err ) {
-	console.log( err.message );
+var promptSchema = {
+  properties: {
+    url: {
+      required: false,
+      default: 'https://www.statnews.com/2016/03/25/zika-globe-interactive/'
+    }
+  }
+}
+
+console.log( 'Please enter a URL to use as the starting point for this dataviz skeleton, or press enter to accept the default.' );
+prompt.start();
+prompt.get( promptSchema, function( err, result ) {
+  beginScraping( result.url );
 } );
+
+function beginScraping( url ) {
+  scraper.scrape( {
+  	urls: [ url ],
+  	directory: 'app/assets/',
+  	subdirectories: [
+  		{
+  			directory: 'vendor/stat/img',
+  			extensions: [ '.png', '.jpg', '.jpeg', '.gif', '.svg' ]
+  		},
+  		{
+  			directory: 'vendor/stat/js',
+  			extensions: [ '.js' ]
+  		},
+  		{
+  			directory: 'vendor/stat/css',
+  			extensions: [ '.css' ]
+  		},
+  		{
+  			directory: 'vendor/stat/fonts',
+  			extensions: [ '.ttf', '.woff', '.woff2', '.eot' ]
+  		}
+  	],
+  	sources: [
+  		{ selector: 'img',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'input',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'object',
+  			attr: 'data'
+  		},
+  		{
+  			selector: 'embed',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'param[name="movie"]',
+  			attr: 'value'
+  		},
+  		{
+  			selector: 'script',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'link[rel="stylesheet"]',
+  			attr: 'href'
+  		},
+  		{
+  			selector: 'link[rel*="icon"]',
+  			attr: 'href'
+  		}
+  	],
+  	urlFilter: function( url ) {
+  		// Don't save the ComScore tracking pixel.
+  		// This would otherwise be saved to app/assets/p2.
+  		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
+  	}
+  } ).then( function( results ) {
+  	if ( results ) {
+  		file = this.options.directory + '/' + results[0].filename;
+  		fs.readFile( file, 'utf8', processSkeleton );
+  	}
+  } ).catch( function( err ) {
+  	console.log( err.message );
+  } );
+}
 
 function processSkeleton( err, data ) {
 	if ( err ) {
@@ -93,6 +111,7 @@ function removeScripts( data ) {
 		i,
 		scriptSrcs = [
 			'vendor/stat/js/stat-dfp.js',
+      'vendor/stat/js/stat-modal.js',
 			'vendor/stat/js/sfp.js',
 			'vendor/stat/js/bostonglobemedia.js',
 			'vendor/stat/js/AppMeasurement.js',

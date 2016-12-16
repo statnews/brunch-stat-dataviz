@@ -24,6 +24,7 @@
     "html-minifier": "^1.5.0",
     "javascript-brunch": "^2.0.0",
     "postcss-brunch": "^0.5.0",
+    "prompt": "^1.0.0",
     "uglify-js-brunch": "^2.0.0",
     "version-brunch": "^1.0.1",
     "website-scraper": "^1.1.1"
