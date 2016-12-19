@@ -18,7 +18,7 @@ var promptUrlSchema = {
 };
 
 if ( args.includes( '--silent' ) ) {
-  beginScraping( defUrl );
+  beginScraping( defaultUrl );
 } else {
   let dirExists = fs.existsSync( 'app/assets' );
   if ( dirExists ) {
