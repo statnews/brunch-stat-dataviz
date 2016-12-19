@@ -307,7 +307,7 @@ function replaceContent( data ) {
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
 		<!-- Dataviz container start -->
-		<div class="stat-dataviz media media-break">
+		<figure class="stat-dataviz media media-break">
 			<div class="media-content">
 				<div class="dataviz-${vizNum}">
 					<p><strong>Visualization code goes here.</strong> Please target JS and CSS to the <code>.dataviz-${vizNum}</code> class.</p>
@@ -318,7 +318,7 @@ function replaceContent( data ) {
 				<cite class="media-credit">Test Author/STAT</cite>
 				<span class="media-source">Source: <a href="#">Test Source</a></span>
 			</figcaption>
-		</div>
+		</figure>
 		<!-- Dataviz container end -->
 
 	` );
