@@ -54,6 +54,16 @@ You can edit your CSS, JS, and HTML files in the `app/` drectory. When Brunch ru
 
 We don't recommend editing files directly in `public/`, since they will be overwritten by the source files in `app/` whenever a new build is performed.
 
-The Brunch web server supports "live reload" functionality, such that when you make any edits to your `app/` files, the web browser can automatically load those changes without a full page refresh. A browser plug-in is required to use this (see the [CSS Live Reloader](https://addons.mozilla.org/en-US/firefox/addon/css-live-reloader) add-on for Firefox, for example). This is completely optional, though highly recommended since it can spped up your workflow. Otherwise, you can just manually refresh the browser page whenever you make code changes.
+The Brunch web server supports "live reload" functionality, such that when you make any edits to your `app/` files, the web browser can automatically load those changes without a full page refresh. A browser plug-in is required to use this (see the [CSS Live Reloader](https://addons.mozilla.org/en-US/firefox/addon/css-live-reloader) add-on for Firefox, for example). This is completely optional, though highly recommended since it can speed up your workflow. Otherwise, you can just manually refresh the browser page whenever you make code changes.
+
+## Updating the skeleton & custom URLs
+
+If you'd like to use a different page for the skeleton, you can manually update the skeleton with a URL of your choosing. This can be useful if you'd like to test how your visualization would work in a photo essay or another post with special formatting.
+
+Note that doing this will delete your `index.html` and any other files in `app/assets`. Files in `app/js` or `app/js` will not be affected.
+
+To do update the skeleton, create a new project as described above, go to your project folder, and then run `node stat-skeleton.js`. Enter a URL, then enter `y` to confirm that you'd like to overwrite the assets folder.
+
+---
 
 ### [Learn more](learn-more.md) about how STAT Dataviz works

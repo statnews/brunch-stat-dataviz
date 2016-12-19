@@ -2,74 +2,126 @@ var scraper = require( 'website-scraper' );
 var fs = require( 'fs' );
 var cheerio = require( 'cheerio' );
 var file;
+var prompt = require( 'prompt' );
+var rimraf = require( 'rimraf' );
+var args = process.argv.slice( 2 );
+var defaultUrl = 'https://www.statnews.com/2016/03/25/zika-globe-interactive/';
 
-scraper.scrape( {
-	urls: [ 'https://www.statnews.com/2016/03/25/zika-globe-interactive/' ],
-	directory: 'app/assets/',
-	subdirectories: [
-		{
-			directory: 'vendor/stat/img',
-			extensions: [ '.png', '.jpg', '.jpeg', '.gif', '.svg' ]
-		},
-		{
-			directory: 'vendor/stat/js',
-			extensions: [ '.js' ]
-		},
-		{
-			directory: 'vendor/stat/css',
-			extensions: [ '.css' ]
-		},
-		{
-			directory: 'vendor/stat/fonts',
-			extensions: [ '.ttf', '.woff', '.woff2', '.eot' ]
-		}
-	],
-	sources: [
-		{ selector: 'img',
-			attr: 'src'
-		},
-		{
-			selector: 'input',
-			attr: 'src'
-		},
-		{
-			selector: 'object',
-			attr: 'data'
-		},
-		{
-			selector: 'embed',
-			attr: 'src'
-		},
-		{
-			selector: 'param[name="movie"]',
-			attr: 'value'
-		},
-		{
-			selector: 'script',
-			attr: 'src'
-		},
-		{
-			selector: 'link[rel="stylesheet"]',
-			attr: 'href'
-		},
-		{
-			selector: 'link[rel*="icon"]',
-			attr: 'href'
-		}
-	],
-	urlFilter: function( url ) {
-		// Don't save the ComScore tracking pixel.
-		// This would otherwise be saved to app/assets/p2.
-		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
-	}
-} ).then( function( results ) {
-	if ( results ) {
-		file = this.options.directory + '/' + results[0].filename;
-		fs.readFile( file, 'utf8', processSkeleton );
-	}
-} ).catch( function( err ) {
-	console.log( err.message );
-} );
+var promptUrlSchema = {
+  properties: {
+    url: {
+      required: false,
+      type: 'string',
+      default: defaultUrl
+    }
+  }
+};
+
+if ( args.includes( '--silent' ) ) {
+  beginScraping( defUrl );
+} else {
+  let dirExists = fs.existsSync( 'app/assets' );
+  if ( dirExists ) {
+    // console.log( 'Warning: the app/assets directory exists. Overwrite?' );
+    promptUrlSchema.properties.overwrite = {
+      required: true,
+      type: 'string',
+      validator: /[YNyn]/,
+      warning: 'Please enter Y or N.',
+      message: 'Overwrite app/assets directory? (Y/N)'
+    }
+  }
+  prompt.start();
+  prompt.get( promptUrlSchema, function( err, result ) {
+    if ( dirExists && result.overwrite.toLowerCase() !== 'y' ) {
+      process.exit();
+    }
+    if ( dirExists ) {
+      rimraf( 'app/assets', function( err ) {
+        if ( err ) {
+      		throw err;
+      	}
+        beginScraping( result.url );
+      } );
+    } else {
+      beginScraping( result.url );
+    }
+  } );
+}
+
+function beginScraping( url ) {
+  if ( ! args.includes( '--silent' ) ) {
+    console.log( 'Creating dataviz skeleton...' );
+  }
+
+  scraper.scrape( {
+  	urls: [ url ],
+  	directory: 'app/assets/',
+  	subdirectories: [
+  		{
+  			directory: 'vendor/stat/img',
+  			extensions: [ '.png', '.jpg', '.jpeg', '.gif', '.svg' ]
+  		},
+  		{
+  			directory: 'vendor/stat/js',
+  			extensions: [ '.js' ]
+  		},
+  		{
+  			directory: 'vendor/stat/css',
+  			extensions: [ '.css' ]
+  		},
+  		{
+  			directory: 'vendor/stat/fonts',
+  			extensions: [ '.ttf', '.woff', '.woff2', '.eot' ]
+  		}
+  	],
+  	sources: [
+  		{ selector: 'img',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'input',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'object',
+  			attr: 'data'
+  		},
+  		{
+  			selector: 'embed',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'param[name="movie"]',
+  			attr: 'value'
+  		},
+  		{
+  			selector: 'script',
+  			attr: 'src'
+  		},
+  		{
+  			selector: 'link[rel="stylesheet"]',
+  			attr: 'href'
+  		},
+  		{
+  			selector: 'link[rel*="icon"]',
+  			attr: 'href'
+  		}
+  	],
+  	urlFilter: function( url ) {
+  		// Don't save the ComScore tracking pixel.
+  		// This would otherwise be saved to app/assets/p2.
+  		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
+  	}
+  } ).then( function( results ) {
+  	if ( results ) {
+  		file = this.options.directory + '/' + results[0].filename;
+  		fs.readFile( file, 'utf8', processSkeleton );
+  	}
+  } ).catch( function( err ) {
+  	console.log( err.message );
+  } );
+}
 
 function processSkeleton( err, data ) {
 	if ( err ) {
@@ -93,6 +145,7 @@ function removeScripts( data ) {
 		i,
 		scriptSrcs = [
 			'vendor/stat/js/stat-dfp.js',
+			'vendor/stat/js/stat-modal.js',
 			'vendor/stat/js/sfp.js',
 			'vendor/stat/js/bostonglobemedia.js',
 			'vendor/stat/js/AppMeasurement.js',
@@ -254,7 +307,7 @@ function replaceContent( data ) {
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
 		<!-- Dataviz container start -->
-		<div class="stat-dataviz media media-break">
+		<figure class="stat-dataviz media media-break">
 			<div class="media-content">
 				<div class="dataviz-${vizNum}">
 					<p><strong>Visualization code goes here.</strong> Please target JS and CSS to the <code>.dataviz-${vizNum}</code> class.</p>
@@ -265,7 +318,7 @@ function replaceContent( data ) {
 				<cite class="media-credit">Test Author/STAT</cite>
 				<span class="media-source">Source: <a href="#">Test Source</a></span>
 			</figcaption>
-		</div>
+		</figure>
 		<!-- Dataviz container end -->
 
 	` );
