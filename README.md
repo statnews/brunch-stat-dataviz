@@ -60,7 +60,7 @@ The Brunch web server supports "live reload" functionality, such that when you m
 
 If you'd like to use a different page for the skeleton, you can manually update the skeleton with a URL of your choosing. This can be useful if you'd like to test how your visualization would work in a photo essay or another post with special formatting.
 
-Note that doing this will delete your `index.html` and any other files in `app/assets`. Files in `app/js` or `app/js` will not be affected.
+Note that doing this will delete your `index.html` and any other files in `app/assets`. Files in `app/js` or `app/css` will not be affected.
 
 To do update the skeleton, create a new project as described above, go to your project folder, and then run `node stat-skeleton.js`. Enter a URL, then enter `y` to confirm that you'd like to overwrite the assets folder.
 
