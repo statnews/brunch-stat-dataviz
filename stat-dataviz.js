@@ -75,7 +75,7 @@ function generateMeta( err, data ) {
 
 	$ = cheerio.load( data );
 
-	$dataviz = $( '.stat-dataviz .media-content' ).contents();
+	$dataviz = $( '.stat-dataviz .media-content' ).children();
 
 	meta = {
 		version: getVersion(), // The current Brunch build version.
