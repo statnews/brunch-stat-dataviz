@@ -8,119 +8,119 @@ var args = process.argv.slice( 2 );
 var defaultUrl = 'https://www.statnews.com/2016/03/25/zika-globe-interactive/';
 
 var promptUrlSchema = {
-  properties: {
-    url: {
-      required: false,
-      type: 'string',
-      default: defaultUrl
-    }
-  }
+	properties: {
+		url: {
+			required: false,
+			type: 'string',
+			default: defaultUrl
+		}
+	}
 };
 
 if ( args.includes( '--silent' ) ) {
-  beginScraping( defaultUrl );
+	beginScraping( defaultUrl );
 } else {
-  let dirExists = fs.existsSync( 'app/assets' );
-  if ( dirExists ) {
-    // console.log( 'Warning: the app/assets directory exists. Overwrite?' );
-    promptUrlSchema.properties.overwrite = {
-      required: true,
-      type: 'string',
-      validator: /[YNyn]/,
-      warning: 'Please enter Y or N.',
-      message: 'Overwrite app/assets directory? (Y/N)'
-    }
-  }
-  prompt.start();
-  prompt.get( promptUrlSchema, function( err, result ) {
-    if ( dirExists && result.overwrite.toLowerCase() !== 'y' ) {
-      process.exit();
-    }
-    if ( dirExists ) {
-      rimraf( 'app/assets', function( err ) {
-        if ( err ) {
-      		throw err;
-      	}
-        beginScraping( result.url );
-      } );
-    } else {
-      beginScraping( result.url );
-    }
-  } );
+	let dirExists = fs.existsSync( 'app/assets' );
+	if ( dirExists ) {
+		// console.log( 'Warning: the app/assets directory exists. Overwrite?' );
+		promptUrlSchema.properties.overwrite = {
+			required: true,
+			type: 'string',
+			validator: /[YNyn]/,
+			warning: 'Please enter Y or N.',
+			message: 'Overwrite app/assets directory? (Y/N)'
+		}
+	}
+	prompt.start();
+	prompt.get( promptUrlSchema, function( err, result ) {
+		if ( dirExists && result.overwrite.toLowerCase() !== 'y' ) {
+			process.exit();
+		}
+		if ( dirExists ) {
+			rimraf( 'app/assets', function( err ) {
+				if ( err ) {
+					throw err;
+				}
+				beginScraping( result.url );
+			} );
+		} else {
+			beginScraping( result.url );
+		}
+	} );
 }
 
 function beginScraping( url ) {
-  if ( ! args.includes( '--silent' ) ) {
-    console.log( 'Creating dataviz skeleton...' );
-  }
+	if ( !args.includes( '--silent' ) ) {
+		console.log( 'Creating dataviz skeleton...' );
+	}
 
-  scraper.scrape( {
-  	urls: [ url ],
-  	directory: 'app/assets/',
-  	subdirectories: [
-  		{
-  			directory: 'vendor/stat/img',
-  			extensions: [ '.png', '.jpg', '.jpeg', '.gif', '.svg' ]
-  		},
-  		{
-  			directory: 'vendor/stat/js',
-  			extensions: [ '.js' ]
-  		},
-  		{
-  			directory: 'vendor/stat/css',
-  			extensions: [ '.css' ]
-  		},
-  		{
-  			directory: 'vendor/stat/fonts',
-  			extensions: [ '.ttf', '.woff', '.woff2', '.eot' ]
-  		}
-  	],
-  	sources: [
-  		{ selector: 'img',
-  			attr: 'src'
-  		},
-  		{
-  			selector: 'input',
-  			attr: 'src'
-  		},
-  		{
-  			selector: 'object',
-  			attr: 'data'
-  		},
-  		{
-  			selector: 'embed',
-  			attr: 'src'
-  		},
-  		{
-  			selector: 'param[name="movie"]',
-  			attr: 'value'
-  		},
-  		{
-  			selector: 'script',
-  			attr: 'src'
-  		},
-  		{
-  			selector: 'link[rel="stylesheet"]',
-  			attr: 'href'
-  		},
-  		{
-  			selector: 'link[rel*="icon"]',
-  			attr: 'href'
-  		}
-  	],
-  	urlFilter: function( url ) {
-  		// Don't save the ComScore tracking pixel.
-  		// This would otherwise be saved to app/assets/p2.
-  		return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
-  	}
-  } ).then( function( results ) {
-  	if ( results ) {
-  		file = this.options.directory + '/' + results[0].filename;
-  		fs.readFile( file, 'utf8', processSkeleton );
-  	}
-  } ).catch( function( err ) {
-  	console.log( err.message );
-  } );
+	scraper.scrape( {
+		urls: [url],
+		directory: 'app/assets/',
+		subdirectories: [
+			{
+				directory: 'vendor/stat/img',
+				extensions: ['.png', '.jpg', '.jpeg', '.gif', '.svg']
+			},
+			{
+				directory: 'vendor/stat/js',
+				extensions: ['.js']
+			},
+			{
+				directory: 'vendor/stat/css',
+				extensions: ['.css']
+			},
+			{
+				directory: 'vendor/stat/fonts',
+				extensions: ['.ttf', '.woff', '.woff2', '.eot']
+			}
+		],
+		sources: [
+			{ selector: 'img',
+				attr: 'src'
+			},
+			{
+				selector: 'input',
+				attr: 'src'
+			},
+			{
+				selector: 'object',
+				attr: 'data'
+			},
+			{
+				selector: 'embed',
+				attr: 'src'
+			},
+			{
+				selector: 'param[name="movie"]',
+				attr: 'value'
+			},
+			{
+				selector: 'script',
+				attr: 'src'
+			},
+			{
+				selector: 'link[rel="stylesheet"]',
+				attr: 'href'
+			},
+			{
+				selector: 'link[rel*="icon"]',
+				attr: 'href'
+			}
+		],
+		urlFilter: function( url ) {
+			// Don't save the ComScore tracking pixel.
+			// This would otherwise be saved to app/assets/p2.
+			return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
+		}
+	} ).then( function( results ) {
+		if ( results ) {
+			file = this.options.directory + '/' + results[0].filename;
+			fs.readFile( file, 'utf8', processSkeleton );
+		}
+	} ).catch( function( err ) {
+		console.log( err.message );
+	} );
 }
 
 function processSkeleton( err, data ) {
@@ -129,6 +129,7 @@ function processSkeleton( err, data ) {
 	}
 
 	data = removeScripts( data );
+	data = removeNoScripts( data );
 	data = removeStyles( data );
 	data = removeMeta( data );
 	data = removeLinkRels( data );
@@ -151,28 +152,39 @@ function removeScripts( data ) {
 			'vendor/stat/js/AppMeasurement.js',
 			'vendor/stat/js/stat-adobe-analytics.js',
 			'vendor/stat/js/zikaglobe.min.js',
-			'vendor/stat/js/trendmd.min.js'
+			'vendor/stat/js/trendmd.min.js',
+			'vendor/stat/js/statnews-rc.js'
 		],
 		scriptContains = [
 			'gpt.js',
 			'dfpBreakpoints',
-      'statGlobal.dfp',
+			'statGlobal.dfp',
 			'dfpBuiltMappings',
 			'wp-emoji-release.min.js',
 			'TrendMD.register', // TrendMD
 			'_sf_startpt', // Chartbeat
 			'loadChartbeat', // Chartbeat
 			'ml314.com', // Bombora
-			's_code' // Omniture
+			's_code', // Omniture
+			'_comscore', // comScore
+			'fbevents.js' // Facebook Pixel
 		];
 
-	for ( i = 0; i < scriptSrcs.length; i ++ ) {
+	for ( i = 0; i < scriptSrcs.length; i++ ) {
 		$( 'script[src="' + scriptSrcs[i] + '"]' ).remove();
 	}
 
-	for ( i = 0; i < scriptContains.length; i ++ ) {
+	for ( i = 0; i < scriptContains.length; i++ ) {
 		$( 'script:contains("' + scriptContains[i] + '")' ).remove();
 	}
+
+	return $.html();
+}
+
+function removeNoScripts( data ) {
+	var $ = cheerio.load( data );
+
+	$( 'noscript' ).remove();
 
 	return $.html();
 }
@@ -184,7 +196,7 @@ function removeStyles( data ) {
 			'vendor/stat/css/zikaglobe.css'
 		];
 
-	for ( i = 0; i < linkHrefs.length; i ++ ) {
+	for ( i = 0; i < linkHrefs.length; i++ ) {
 		$( 'link[href="' + linkHrefs[i] + '"]' ).remove();
 	}
 
@@ -221,7 +233,7 @@ function removeMeta( data ) {
 			'article:tag'
 		];
 
-	for ( var i = 0; i < meta.length; i ++ ) {
+	for ( var i = 0; i < meta.length; i++ ) {
 		$( 'meta[property="' + meta[i] + '"]' ).remove();
 		$( 'meta[name="' + meta[i] + '"]' ).remove();
 	}
@@ -245,7 +257,7 @@ function removeLinkRels( data ) {
 			'shortlink'
 		];
 
-	for ( var i = 0; i < rels.length; i ++ ) {
+	for ( var i = 0; i < rels.length; i++ ) {
 		$( 'link[rel="' + rels[i] + '"]' ).remove();
 	}
 
@@ -256,7 +268,7 @@ function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
 	$( 'head' ).append( '<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n" );
-	$( 'body' ).append( '<script src="app.js"></script><script>require(\'initialize\');</script>' + "\n" );
+	$( 'body' ).append( '<script src="app.js"></script><script>jQuery( function( $ ) { if ( $( \'.stat-dataviz\' ).length ) { require( \'initialize\' ); } } );</script>' + "\n" );
 
 	return $.html();
 }
@@ -286,17 +298,17 @@ function getPlaceholder( width, height ) {
 		`;
 }
 
-function getRandomInt(min, max) {
+function getRandomInt( min, max ) {
 	// From https://mdn.io/math-random
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+	min = Math.ceil( min );
+	max = Math.floor( max );
+	return Math.floor( Math.random() * ( max - min ) ) + min;
 }
 
 function replaceContent( data ) {
 	var $ = cheerio.load( data ),
 		title = 'STAT Dataviz Skeleton',
-		vizNum = getRandomInt(0, 9999999);
+		vizNum = getRandomInt( 0, 9999999 );
 
 	$( 'title' ).text( title );
 	$( '.header-inner .article-title' ).text( title );
