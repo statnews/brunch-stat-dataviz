@@ -268,7 +268,7 @@ function addAppScripts( data ) {
 	var $ = cheerio.load( data );
 
 	$( 'head' ).append( '<link rel="stylesheet" href="app.css" type="text/css" media="screen">' + "\n" );
-	$( 'body' ).append( '<script src="app.js"></script><script>jQuery( function( $ ) { if ( $( \'.stat-dataviz\' ).length ) { require( \'initialize\' ); } } );</script>' + "\n" );
+	$( 'body' ).append( '<script src="app.js"></script><script>jQuery( function( $ ) { require( \'initialize\' ); } );</script>' + "\n" );
 
 	return $.html();
 }
