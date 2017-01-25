@@ -4,5 +4,5 @@
 // This means that you can count on the document being fully ready by the
 // time this file (and all its dependencies) get loaded.
 
-// Initialize/require your main JS module(s) here. For example:
+// Initialize/require your main JS module here. For example:
 // var concussion = require('js/concussions');
