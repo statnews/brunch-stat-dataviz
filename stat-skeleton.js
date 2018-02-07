@@ -79,6 +79,9 @@ function beginScraping( url ) {
 			{ selector: 'img',
 				attr: 'src'
 			},
+			{ selector: 'img',
+				attr: 'srcset'
+			},
 			{
 				selector: 'input',
 				attr: 'src'
@@ -109,9 +112,8 @@ function beginScraping( url ) {
 			}
 		],
 		urlFilter: function( url ) {
-			// Don't save the ComScore tracking pixel.
-			// This would otherwise be saved to app/assets/p2.
-			return ( url.indexOf( 'scorecardresearch.com' ) === -1 );
+			// Only save first-party files and scripts from our prod domain.
+			return url.indexOf( 'https://www.statnews.com/' ) === 0;
 		}
 	} ).then( function( results ) {
 		if ( results ) {
@@ -145,15 +147,16 @@ function removeScripts( data ) {
 	var $ = cheerio.load( data ),
 		i,
 		scriptSrcs = [
-			'vendor/stat/js/stat-dfp.js',
-			'vendor/stat/js/stat-modal.js',
-			'vendor/stat/js/sfp.js',
-			'vendor/stat/js/bostonglobemedia.js',
-			'vendor/stat/js/AppMeasurement.js',
-			'vendor/stat/js/stat-adobe-analytics.js',
-			'vendor/stat/js/zikaglobe.min.js',
-			'vendor/stat/js/trendmd.min.js',
-			'vendor/stat/js/statnews-rc.js'
+			'stat-dfp.js',
+			'stat-modal.js',
+			'sfp.js',
+			'bostonglobemedia.js',
+			'AppMeasurement.js',
+			'stat-adobe-analytics.js',
+			'zikaglobe.min.js',
+			'trendmd.min.js',
+			'statnews-rc.js',
+			'dmd-tracking.js'
 		],
 		scriptContains = [
 			'gpt.js',
@@ -167,11 +170,14 @@ function removeScripts( data ) {
 			'ml314.com', // Bombora
 			's_code', // Omniture
 			'_comscore', // comScore
-			'fbevents.js' // Facebook Pixel
+			'fbevents.js', // Facebook Pixel
+			'_linkedin_data_partner_id', // LinkedIn
+			'insight.min.js', // LinkedIn
+			'uwt.js' // Twitter
 		];
 
 	for ( i = 0; i < scriptSrcs.length; i++ ) {
-		$( 'script[src="' + scriptSrcs[i] + '"]' ).remove();
+		$( 'script[src*="' + scriptSrcs[i] + '"]' ).remove();
 	}
 
 	for ( i = 0; i < scriptContains.length; i++ ) {
