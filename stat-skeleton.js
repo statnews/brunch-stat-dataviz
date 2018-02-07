@@ -156,7 +156,9 @@ function removeScripts( data ) {
 			'zikaglobe.min.js',
 			'trendmd.min.js',
 			'statnews-rc.js',
-			'dmd-tracking.js'
+			'dmd-tracking.js',
+			'jEuQjxp9.js',
+			'stat-video.js'
 		],
 		scriptContains = [
 			'gpt.js',
