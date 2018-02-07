@@ -238,7 +238,10 @@ function removeMeta( data ) {
 			'news_keywords',
 			'msapplication-TileImage',
 			'article:author',
-			'article:tag'
+			'article:tag',
+			'og:image:secure_url',
+			'fb:pages',
+			'ia:markup_url'
 		];
 
 	for ( var i = 0; i < meta.length; i++ ) {
