@@ -28,5 +28,9 @@ function processIgnore( err, data ) {
 	data = data.replace( 'app/assets/index.html\n', '' );
 	data = data.replace( 'app/assets/vendor/\n', '' );
 
-	fs.writeFile( '.gitignore', data );
+	fs.writeFile( '.gitignore', data, function( err ) {
+		if ( err ) {
+			throw err;
+		}
+	} );
 }
