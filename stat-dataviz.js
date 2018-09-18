@@ -14,7 +14,7 @@ var config = {
 	meta_file: 'public/stat-dataviz.json',
 	version_file: 'public/version.json',
 	init_module: 'initialize'
-}
+};
 
 function getVersion() {
 	var version,
@@ -84,7 +84,7 @@ function generateMeta( err, data ) {
 		stylesheets: getStylesheets(), // CSS bundle(s).
 		data_attribs: getDataAttribs( $dataviz ), // Datviz container data attribs.
 		init_module: config.init_module // Name of the require() entry point module.
-	}
+	};
 
 	fs.writeFile( config.meta_file, JSON.stringify( meta ), function( err ) {
 		if ( err ) {

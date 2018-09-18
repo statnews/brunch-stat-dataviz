@@ -29,7 +29,7 @@ if ( args.includes( '--silent' ) ) {
 			validator: /[YNyn]/,
 			warning: 'Please enter Y or N.',
 			message: 'Overwrite app/assets directory? (Y/N)'
-		}
+		};
 	}
 	prompt.start();
 	prompt.get( promptUrlSchema, function( err, result ) {
@@ -140,7 +140,11 @@ function processSkeleton( err, data ) {
 	data = addRobotsMeta( data );
 	data = replaceContent( data );
 
-	fs.writeFile( file, data );
+	fs.writeFile( file, data, function( err ) {
+		if ( err ) {
+			throw err;
+		}
+	} );
 }
 
 function removeScripts( data ) {
@@ -175,7 +179,9 @@ function removeScripts( data ) {
 			'fbevents.js', // Facebook Pixel
 			'_linkedin_data_partner_id', // LinkedIn
 			'insight.min.js', // LinkedIn
-			'uwt.js' // Twitter
+			'uwt.js', // Twitter
+			'3318816.js', // HubSpot
+			'window.Krux' // Krux/Salesforce DMP
 		];
 
 	for ( i = 0; i < scriptSrcs.length; i++ ) {
@@ -326,7 +332,7 @@ function replaceContent( data ) {
 	$( '.content-header .post-title h1' ).text( title );
 	// If .post-widgets is removed, the sidebar won't initalize properly.
 	$( '.post-widgets' ).html( '' );
-	$( 'article.content-article' ).html( `
+	$( '.content-article' ).html( `
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 		<figure class="stat-dataviz media media-break">
 			<div class="media-content">
